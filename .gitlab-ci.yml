@@ -23,4 +23,3 @@ docker-build:
         "."
   after_script:
     - docker push $CACHE_IMAGE:latest
-
