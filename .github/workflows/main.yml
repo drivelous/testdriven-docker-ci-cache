@@ -6,6 +6,7 @@ on: [push]
 
 env:
     CACHE_IMAGE: mjhea0/docker-ci-cache
+    MY_IMAGE: drivelous/docker-ci-cache
     DOCKER_BUILDKIT: 1
 
 jobs:
@@ -44,7 +45,7 @@ jobs:
                       "."
 
             - name: Push base image to docker hub
-              run: docker push $CACHE_IMAGE:base
+              run: docker push $MY_IMAGE:base
 
             - name: Push stage image to docker hub
-              run: docker push $CACHE_IMAGE:stage
+              run: docker push $MY_IMAGE:stage
