@@ -1,0 +1,36 @@
+# _config-examples/multi-stage/compose/circle.yml
+
+version: 2.1
+
+jobs:
+  build:
+    machine:
+      image: ubuntu-2004:202010-01
+    environment:
+      CACHE_IMAGE: mjhea0/docker-ci-cache
+      DOCKER_BUILDKIT: 1
+      COMPOSE_DOCKER_CLI_BUILD: 1
+    steps:
+      - checkout
+      - run:
+          name: Log in to docker hub
+          command: docker login -u $REGISTRY_USER -p $REGISTRY_PASS
+      - run:
+          name: Build base from dockerfile
+          command: |
+            docker build \
+              --target base \
+              --cache-from $CACHE_IMAGE:base \
+              --tag $CACHE_IMAGE:base \
+              --file ./Dockerfile.multi \
+              --build-arg BUILDKIT_INLINE_CACHE=1 \
+              "."
+      - run:
+          name: Build Docker images
+          command: docker-compose -f docker-compose.multi.yml build --build-arg BUILDKIT_INLINE_CACHE=1
+      - run:
+          name: Push base image to docker hub
+          command: docker push $CACHE_IMAGE:base
+      - run:
+          name: Push stage image to docker hub
+          command: docker push $CACHE_IMAGE:stage

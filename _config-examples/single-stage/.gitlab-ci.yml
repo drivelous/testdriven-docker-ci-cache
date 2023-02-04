@@ -1,0 +1,27 @@
+# _config-examples/single-stage/.gitlab-ci.yml
+
+image: docker:stable
+services:
+  - docker:dind
+
+variables:
+  DOCKER_DRIVER: overlay2
+  CACHE_IMAGE: mjhea0/docker-ci-cache
+  DOCKER_BUILDKIT: 1
+
+stages:
+  - build
+
+docker-build:
+  stage: build
+  before_script:
+    - docker login -u $REGISTRY_USER -p $REGISTRY_PASS
+  script:
+    - docker build
+        --cache-from $CACHE_IMAGE:latest
+        --tag $CACHE_IMAGE:latest
+        --file ./Dockerfile
+        --build-arg BUILDKIT_INLINE_CACHE=1
+        "."
+  after_script:
+    - docker push $CACHE_IMAGE:latest

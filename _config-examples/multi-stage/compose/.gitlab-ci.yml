@@ -1,0 +1,31 @@
+# _config-examples/multi-stage/compose/.gitlab-ci.yml
+
+image: docker/compose:latest
+services:
+  - docker:dind
+
+variables:
+  DOCKER_DRIVER: overlay
+  CACHE_IMAGE: mjhea0/docker-ci-cache
+  DOCKER_BUILDKIT: 1
+  COMPOSE_DOCKER_CLI_BUILD: 1
+
+stages:
+  - build
+
+docker-build:
+  stage: build
+  before_script:
+    - docker login -u $REGISTRY_USER -p $REGISTRY_PASS
+  script:
+    - docker build
+        --target base
+        --cache-from $CACHE_IMAGE:base
+        --tag $CACHE_IMAGE:base
+        --file ./Dockerfile.multi
+        --build-arg BUILDKIT_INLINE_CACHE=1
+        "."
+    - docker-compose -f docker-compose.multi.yml build --build-arg BUILDKIT_INLINE_CACHE=1
+  after_script:
+    - docker push $CACHE_IMAGE:base
+    - docker push $CACHE_IMAGE:stage

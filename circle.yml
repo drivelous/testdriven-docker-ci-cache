@@ -1,0 +1,25 @@
+version: 2.1
+
+jobs:
+  build:
+    machine:
+      image: ubuntu-2004:202010-01
+    environment:
+      CACHE_IMAGE: mjhea0/docker-ci-cache
+      DOCKER_BUILDKIT: 1
+    steps:
+      - checkout
+      - run:
+          name: Log in to docker hub
+          command: docker login -u $REGISTRY_USER -p $REGISTRY_PASS
+      - run:
+          name: Build from dockerfile
+          command: |
+            docker build \
+              --cache-from $CACHE_IMAGE:latest \
+              --tag $CACHE_IMAGE:latest \
+              --build-arg BUILDKIT_INLINE_CACHE=1 \
+              "."
+      - run:
+          name: Push to docker hub
+          command: docker push $CACHE_IMAGE:latest
