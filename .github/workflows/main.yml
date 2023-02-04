@@ -29,7 +29,7 @@ jobs:
                   docker build \
                       --target base \
                       --cache-from $CACHE_IMAGE:base \
-                      --tag $CACHE_IMAGE:base \
+                      --tag $MY_IMAGE:base \
                       --file ./Dockerfile.multi \
                       --build-arg BUILDKIT_INLINE_CACHE=1 \
                       "."
@@ -39,7 +39,7 @@ jobs:
                   docker build \
                       --cache-from $CACHE_IMAGE:base \
                       --cache-from $CACHE_IMAGE:stage \
-                      --tag $CACHE_IMAGE:stage \
+                      --tag $MY_IMAGE:stage \
                       --file ./Dockerfile.multi \
                       --build-arg BUILDKIT_INLINE_CACHE=1 \
                       "."
