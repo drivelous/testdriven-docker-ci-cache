@@ -30,7 +30,7 @@ jobs:
                       --cache-from $CACHE_IMAGE:base \
                       --tag $CACHE_IMAGE:base \
                       --file ./Dockerfile.multi \
-                      --build-arg BUILDKIT_INLINE_CACHE=1
+                      --build-arg BUILDKIT_INLINE_CACHE=1 \
                       "."
 
             - name: Build stage from dockerfile
@@ -40,7 +40,7 @@ jobs:
                       --cache-from $CACHE_IMAGE:stage \
                       --tag $CACHE_IMAGE:stage \
                       --file ./Dockerfile.multi \
-                      --build-arg BUILDKIT_INLINE_CACHE=1
+                      --build-arg BUILDKIT_INLINE_CACHE=1 \
                       "."
 
             - name: Push base image to docker hub
