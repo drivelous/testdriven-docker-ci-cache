@@ -5,8 +5,7 @@ name: Docker Build
 on: [push]
 
 env:
-    CACHE_IMAGE: mjhea0/docker-ci-cache
-    MY_IMAGE: drivelous/docker-ci-cache
+    MY_IMAGE: ghcr.io/drivelous/docker-ci-cache
     DOCKER_BUILDKIT: 1
 
 jobs:
@@ -28,7 +27,7 @@ jobs:
               run: |
                   docker build \
                       --target base \
-                      --cache-from $CACHE_IMAGE:base \
+                      --cache-from $MY_IMAGE:base \
                       --tag $MY_IMAGE:base \
                       --file ./Dockerfile.multi \
                       --build-arg BUILDKIT_INLINE_CACHE=1 \
@@ -37,8 +36,8 @@ jobs:
             - name: Build stage from dockerfile
               run: |
                   docker build \
-                      --cache-from $CACHE_IMAGE:base \
-                      --cache-from $CACHE_IMAGE:stage \
+                      --cache-from $MY_IMAGE:base \
+                      --cache-from $MY_IMAGE:stage \
                       --tag $MY_IMAGE:stage \
                       --file ./Dockerfile.multi \
                       --build-arg BUILDKIT_INLINE_CACHE=1 \
