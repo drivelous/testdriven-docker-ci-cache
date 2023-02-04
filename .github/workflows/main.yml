@@ -23,7 +23,6 @@ jobs:
                   username: ${{ secrets.GHCR_USERNAME }}
                   password: ${{ secrets.GHCR_TOKEN }}
 
-
             - name: Build base from dockerfile
               run: |
                   docker build \
@@ -35,14 +34,14 @@ jobs:
                       "."
 
             - name: Build stage from dockerfile
-                run: |
-                    docker build \
-                        --cache-from $CACHE_IMAGE:base \
-                        --cache-from $CACHE_IMAGE:stage \
-                        --tag $CACHE_IMAGE:stage \
-                        --file ./Dockerfile.multi \
-                        --build-arg BUILDKIT_INLINE_CACHE=1
-                        "."
+              run: |
+                  docker build \
+                      --cache-from $CACHE_IMAGE:base \
+                      --cache-from $CACHE_IMAGE:stage \
+                      --tag $CACHE_IMAGE:stage \
+                      --file ./Dockerfile.multi \
+                      --build-arg BUILDKIT_INLINE_CACHE=1
+                      "."
 
             - name: Push base image to docker hub
               run: docker push $CACHE_IMAGE:base
